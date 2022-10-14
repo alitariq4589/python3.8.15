@@ -25,9 +25,13 @@ node{
         '''
     }
 	stage (' *** BUILD PHASE ***'){
-		make -j$(nproc)
+		sh'''#!/bin/bash
+			make -j$(nproc)
+		'''
 	}
 	stage(' *** BINARY EXTRACTION IN $PREFIX ***'){
-		make -j$(nproc)
+		sh'''#!/bin/bash
+			make -j$(nproc) install
+		'''
 	}
 }

@@ -1,0 +1,33 @@
+node{
+    checkout scm //Getting content of this repo
+    stage('*** PRE-BUILD SETTING ***') { // for display purposes
+        //Setting up directory tree using bash commands
+        sh '''#!/bin/bash
+            echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
+			PROJECT_DIR=$(pwd)
+			echo -e "[jenkinsfile INFO]: Creating installation directory"
+			mkdir path_to_install
+			cd path_to_install #Python will be installed here
+			echo -e "[jenkinsfile INFO]: Saving installation directory to shell variable $PREFIX"
+			PREFIX=$(pwd)
+			cd $PROJECT_DIR
+			echo -e "[jenkinsfile VIP INFO]: Jenkinsfile has no way to export variables from one shell instant to another or modifying groovy variables inside bash shell instance."
+			echo -e "[jenkinsfile INFO]: Creating a separate file .vars for saving shell variable for later use."
+			echo "PREFIX=$PREFIX" > .vars
+			echo "PROJECT_DIR=$PROJECT_DIR" >> .vars
+         '''
+    }
+    stage (' *** CONFIGURATION PHASE ***'){
+        sh '''#!/bin/bash
+		source .vars
+		echo -e "[jenkinsfile INFO]: Running configure file"
+		./configure --host=riscv64-unknown-linux-gnu --build=riscv64-unknown-linux --prefix=$PREFIX --disable-ipv6 ac_cv_file__dev_ptmx=yes ac_cv_file__dev_ptc=yes --enable-optimizations
+        '''
+    }
+	stage (' *** BUILD PHASE ***'){
+		make -j$(nproc)
+	}
+	stage(' *** BINARY EXTRACTION IN $PREFIX ***'){
+		make -j$(nproc)
+	}
+}

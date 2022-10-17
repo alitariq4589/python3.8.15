@@ -33,5 +33,5 @@ node{
 		sh'''#!/bin/bash
 			make -j$(nproc) install
 		'''
-	}
+	} 
 }

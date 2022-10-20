@@ -3,8 +3,8 @@ node ('Runner2'){
     stage('*** PRE-BUILD SETTING ***') { // for display purposes
         //Setting up directory tree using bash commands
         sh '''#!/bin/bash
-        	echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
-	    	PROJECT_DIR=$(pwd)
+            echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
+			PROJECT_DIR=$(pwd)
 			echo -e "[jenkinsfile INFO]: Creating installation directory"
 			mkdir path_to_install
 			cd path_to_install #Python will be installed here
@@ -21,7 +21,7 @@ node ('Runner2'){
         sh '''#!/bin/bash
 		source .vars
 		echo -e "[jenkinsfile INFO]: Running configure file"
-		./configure --host=riscv64-unknown-linux-gnu --build=x86_64-linux-gnu --prefix=$PREFIX --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no
+		./configure --host=riscv64-unknown-linux-gnu --build=riscv64-unknown-linux --prefix=$PREFIX --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no
         '''
     }
 	stage (' *** BUILD PHASE ***'){

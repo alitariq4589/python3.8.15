@@ -1,4 +1,4 @@
-node{
+node ('Runner2'){
     checkout scm //Getting content of this repo
     stage('*** PRE-BUILD SETTING ***') { // for display purposes
         //Setting up directory tree using bash commands

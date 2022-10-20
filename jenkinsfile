@@ -36,7 +36,6 @@ node ('Runner2'){
 	}
 	stage('*** TESTING PHASE ***'){
 		sh'''#!/bin/bash
-			set +e
 			source .vars
 			cd $PREFIX/bin
 			echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"

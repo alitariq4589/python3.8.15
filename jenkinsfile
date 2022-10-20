@@ -3,8 +3,8 @@ node ('Runner2'){
     stage('*** PRE-BUILD SETTING ***') { // for display purposes
         //Setting up directory tree using bash commands
         sh '''#!/bin/bash
-            echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
-			PROJECT_DIR=$(pwd)
+        	echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
+	    	PROJECT_DIR=$(pwd)
 			echo -e "[jenkinsfile INFO]: Creating installation directory"
 			mkdir path_to_install
 			cd path_to_install #Python will be installed here

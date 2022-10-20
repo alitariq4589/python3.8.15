@@ -38,7 +38,7 @@ node ('Runner2'){
 		sh'''#!/bin/bash
 			set +e
 			source .vars
-			cd $PREFIX
+			cd $PREFIX/bin
 			echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
 			echo "print('Hello World inside Python !')" > helloworld.py
 			echo -e "\n [jenkinsfile INFO]: Executing on qemu-riscv64 (linux-user)"

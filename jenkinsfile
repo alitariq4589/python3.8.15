@@ -42,6 +42,9 @@ node ('Runner2'){
 			echo "print('Hello World inside Python !')" > helloworld.py
 			echo -e "\n [jenkinsfile INFO]: Executing on qemu-riscv64 (linux-user)"
 			qemu-riscv64 -L $RISCV_SYSROOT ./python3.8 helloworld.py
+			echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
+			rm helloworld.py
+			echo "[jenkinsfile INFO]: END OF JOB !"
 		'''
 	}
 }

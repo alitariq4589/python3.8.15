@@ -3,7 +3,7 @@ node ('Runner2'){
     stage('*** PRE-BUILD SETTING ***') { // for display purposes
         //Setting up directory tree using bash commands
         sh '''#!/bin/bash
-            echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
+        	echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
 			PROJECT_DIR=$(pwd)
 			echo -e "[jenkinsfile INFO]: Creating installation directory"
 			mkdir path_to_install
@@ -21,7 +21,7 @@ node ('Runner2'){
         sh '''#!/bin/bash
 		source .vars
 		echo -e "[jenkinsfile INFO]: Running configure file"
-		./configure --host=riscv64-unknown-linux-gnu --build=riscv64-unknown-linux --prefix=$PREFIX --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no
+		./configure --host=riscv64-unknown-linux-gnu --build=x86_64-linux-gnu --prefix=$PREFIX --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no
         '''
     }
 	stage (' *** BUILD PHASE ***'){
@@ -32,6 +32,19 @@ node ('Runner2'){
 	stage(' *** BINARY EXTRACTION IN $PREFIX ***'){
 		sh'''#!/bin/bash
 			make -j$(nproc) install
+		'''
+	}
+	stage('*** TESTING PHASE ***'){
+		sh'''#!/bin/bash
+			source .vars
+			cd $PREFIX/bin
+			echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
+			echo "print('Hello World inside Python !')" > helloworld.py
+			echo -e "\n [jenkinsfile INFO]: Executing on qemu-riscv64 (linux-user)"
+			qemu-riscv64 -L $RISCV_SYSROOT ./python3.8 helloworld.py
+			echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
+			rm helloworld.py
+			echo "[jenkinsfile INFO]: END OF JOB !"
 		'''
 	}
 }

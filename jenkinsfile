@@ -39,7 +39,7 @@ node ('Runner2'){
 			source .vars
 			cd $PREFIX/bin
 			echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
-			echo "print('Hello World inside Python !'" > helloworld.py
+			echo "pint('Hello World inside Python !')" > helloworld.py
 			echo -e "\n [jenkinsfile INFO]: Executing on qemu-riscv64 (linux-user)"
 			qemu-riscv64 -L $RISCV_SYSROOT ./python3.8 helloworld.py
 		'''

@@ -1,4 +1,4 @@
-# Autodetecting setup.py script for building the Python extensions 
+# Autodetecting setup.py script for building the Python extensions
 
 import argparse
 import importlib._bootstrap

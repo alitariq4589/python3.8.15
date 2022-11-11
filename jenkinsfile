@@ -42,7 +42,7 @@ node ('x86_runner2'){
 			cd "$PREFIX"/bin || exit 2
 			echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
 			echo "print('Hello World inside Python !')" > helloworld.py
-			echo -e "\n[jenkinsfile INFO]: Executing on qemu-riscv64 (linux-user)"
+			echo -e "\n[jenkinsfile INFO]: Executing on x86"
 			./python3.8 helloworld.py
 			echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
 			rm helloworld.py
@@ -94,7 +94,7 @@ node ('qemuusermode_runner2'){
 			cd "$PREFIX"/bin || exit 2
 			echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
 			echo "print('Hello World inside Python !')" > helloworld.py
-			echo -e "\n[jenkinsfile INFO]: Executing on qemu-riscv64 (linux-user)"
+			echo -e "\n[jenkinsfile INFO]: Executing on qemu user mode"
 			qemu-riscv64 -L "$RISCV_SYSROOT" ./python3.8 helloworld.py
 			echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
 			rm helloworld.py
@@ -146,7 +146,7 @@ node ('riscv64_runner1'){
 			cd "$PREFIX"/bin || exit 2
 			echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
 			echo "print('Hello World inside Python !')" > helloworld.py
-			echo -e "\n[jenkinsfile INFO]: Executing on qemu-riscv64 (linux-user)"
+			echo -e "\n[jenkinsfile INFO]: Executing on qemu linux (ubuntu 22.04)"
 			./python3.8 helloworld.py
 			echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
 			rm helloworld.py

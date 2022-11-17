@@ -1,4 +1,7 @@
 node ('x86_runner2'){
+	stage('*** Clean up ***'){
+		cleanWs()
+	}
 	stage ('*** Checking out SCM on x86 ***'){
     	checkout scm //Getting content of this repo
 	}
@@ -49,11 +52,11 @@ node ('x86_runner2'){
 			echo "[jenkinsfile INFO]: END OF JOB !"
 		'''
 	}
-	stage('*** Clean up ***'){
-		wsCleanup()
-	}
 }
 node ('qemuusermode_runner2'){
+	stage('*** Clean up ***'){
+		cleanWs()
+	}
 	stage ('*** Checking out SCM on qemu usermode ***'){
     	checkout scm //Getting content of this repo
 	}
@@ -104,11 +107,11 @@ node ('qemuusermode_runner2'){
 			echo "[jenkinsfile INFO]: END OF JOB !"
 		'''
 	}
-	stage('*** Clean up ***'){
-		wsCleanup()
-	}
 }
 node ('riscv64_runner1'){
+	stage('*** Clean up ***'){
+		cleanWs()
+	}
 	stage ('*** Checking out SCM on qemu linux ***'){
     	checkout scm //Getting content of this repo
 	}
@@ -158,8 +161,5 @@ node ('riscv64_runner1'){
 			rm helloworld.py
 			echo "[jenkinsfile INFO]: END OF JOB !"
 		'''
-	}
-	stage('*** Clean up ***'){
-		wsCleanup()
 	}
 }

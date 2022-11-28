@@ -1,156 +1,342 @@
-node ('x86_runner2'){
-	stage ('*** Checking out SCM on x86 ***'){
-    	checkout scm //Getting content of this repo
-	}
-    stage('*** PRE-BUILD SETTINGS on x86 ***') { // for display purposes
+//--------------------------------------- x86_64 Single Core ------------------------------------------
+node('x86_runner2') {
+    stage('*** Cleanup***') {
+        cleanWs()
+    }
+    stage('*** 60s Sleep ***') {
+        sleep(time:60, unit:'SECONDS')
+    }
+    stage('*** Checkout SCM x86 ***') {
+        checkout scm //Getting content of this repo
+    }
+    stage('*** PRE-BUILD SETTINGS x86 ***') { // for display purposes
         //Setting up directory tree using bash commands
         sh '''#!/bin/bash
-			echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
-			PROJECT_DIR=$(pwd)
-			echo -e "[jenkinsfile INFO]: Creating installation directory"
-			mkdir path_to_install
-			cd path_to_install || exit 2 #Python will be installed here
-			echo -e "[jenkinsfile INFO]: Saving installation directory to shell variable $PREFIX"
-			PREFIX=$(pwd)
-			cd "$PROJECT_DIR" || exit 2
-			echo -e "[jenkinsfile VIP INFO]: Jenkinsfile has no way to export variables from one shell instant to another or modifying groovy variables inside bash shell instance."
-			echo -e "[jenkinsfile INFO]: Creating a separate file .vars for saving shell variable for later use."
-			echo "PREFIX=$PREFIX" > .vars
-			echo "PROJECT_DIR=$PROJECT_DIR" >> .vars
+            echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
+            PROJECT_DIR=$(pwd)
+            echo -e "[jenkinsfile INFO]: Creating installation directory"
+            mkdir path_to_install
+            cd path_to_install || exit 2 #Python will be installed here
+            echo -e "[jenkinsfile INFO]: Saving installation directory to shell variable $PREFIX"
+            PREFIX=$(pwd)
+            cd "$PROJECT_DIR" || exit 2
+            echo -e "[jenkinsfile VIP INFO]: Jenkinsfile has no way to export variables from one shell instant to another or modifying groovy variables inside bash shell instance."
+            echo -e "[jenkinsfile INFO]: Creating a separate file .vars for saving shell variable for later use."
+            echo "PREFIX=$PREFIX" > .vars
+            echo "PROJECT_DIR=$PROJECT_DIR" >> .vars
          '''
     }
-	stage ('*** CONFIGURATUION PHASE on x86 ***'){
-		sh '''#!/bin/bash
-			source .vars
-			echo -e "[jenkinsfile INFO]: Running configure file"
-			./configure --prefix=$PREFIX
-		'''
-	}
-	stage ('*** make on x86 ***'){
-		sh'''#!/bin/bash
-			make -j1
-		'''
-	}
-	stage ('*** make install on x86 ***'){
-		sh'''#!/bin/bash
-			make -j1 install
-		'''
-	}
-	stage ('*** TEST on x86 ***'){
-		sh'''#!/bin/bash
-			source .vars
-			cd "$PREFIX"/bin || exit 2
-			echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
-			echo "print('Hello World inside Python !')" > helloworld.py
-			echo -e "\n[jenkinsfile INFO]: Executing on x86"
-			./python3.8 helloworld.py
-			echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
-			rm helloworld.py
-			echo "[jenkinsfile INFO]: END OF JOB !"
-		'''
-	}
+    stage('*** CONFIGURATUION PHASE x86 ***') {
+        sh '''#!/bin/bash
+            source .vars
+            echo -e "[jenkinsfile INFO]: Running configure file"
+            ./configure --prefix=$PREFIX
+        '''
+    }
+    stage('*** make -j1 x86 ***') {
+        sh'''#!/bin/bash
+            make -j1
+        '''
+    }
+    stage('*** make -j1 install x86 single core ***') {
+        sh'''#!/bin/bash
+            make -j1 install
+        '''
+    }
+    stage('*** TEST x86 ***') {
+        sh'''#!/bin/bash
+            source .vars
+            cd "$PREFIX"/bin || exit 2
+            echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
+            echo "print('Hello World inside Python !')" > helloworld.py
+            echo -e "\n[jenkinsfile INFO]: Executing on x86"
+            ./python3.8 helloworld.py
+            echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
+            rm helloworld.py
+            echo "[jenkinsfile INFO]: END OF JOB !"
+        '''
+    }
+
+    //--------------------------------------- x86_64 Two Cores ------------------------------------------
+
+    stage('*** Cleanup ***') {
+        cleanWs()
+    }
+    stage('*** 60s Sleep ***') {
+        sleep(time:60, unit:'SECONDS')
+    }
+    stage('*** Checkout x86 ***') {
+        checkout scm //Getting content of this repo
+    }
+    stage('*** PRE-BUILD SETTINGS x86***') { // for display purposes
+        //Setting up directory tree using bash commands
+        sh '''#!/bin/bash
+            echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
+            PROJECT_DIR=$(pwd)
+            echo -e "[jenkinsfile INFO]: Creating installation directory"
+            mkdir path_to_install
+            cd path_to_install || exit 2 #Python will be installed here
+            echo -e "[jenkinsfile INFO]: Saving installation directory to shell variable $PREFIX"
+            PREFIX=$(pwd)
+            cd "$PROJECT_DIR" || exit 2
+            echo -e "[jenkinsfile VIP INFO]: Jenkinsfile has no way to export variables from one shell instant to another or modifying groovy variables inside bash shell instance."
+            echo -e "[jenkinsfile INFO]: Creating a separate file .vars for saving shell variable for later use."
+            echo "PREFIX=$PREFIX" > .vars
+            echo "PROJECT_DIR=$PROJECT_DIR" >> .vars
+         '''
+    }
+    stage('*** CONFIGURATUION PHASE x86 ***') {
+        sh '''#!/bin/bash
+            source .vars
+            echo -e "[jenkinsfile INFO]: Running configure file"
+            ./configure --prefix=$PREFIX
+        '''
+    }
+    stage('*** make -j2 x86 ***') {
+        sh'''#!/bin/bash
+            make -j2
+        '''
+    }
+    stage('*** make -j2 install x86 ***') {
+        sh'''#!/bin/bash
+            make -j2 install
+        '''
+    }
+    stage('*** TEST on x86 two core ***') {
+        sh'''#!/bin/bash
+            source .vars
+            cd "$PREFIX"/bin || exit 2
+            echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
+            echo "print('Hello World inside Python !')" > helloworld.py
+            echo -e "\n[jenkinsfile INFO]: Executing on x86"
+            ./python3.8 helloworld.py
+            echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
+            rm helloworld.py
+            echo "[jenkinsfile INFO]: END OF JOB !"
+        '''
+    }
 }
-node ('qemuusermode_runner2'){
-	stage ('*** Checking out SCM on qemu usermode ***'){
-    	checkout scm //Getting content of this repo
-	}
+//--------------------------------------- qemu usermode Single Core ------------------------------------------
+node('qemuusermode_runner2') {
+    stage('*** 60s Sleep ***') {
+        sleep(time:60, unit:'SECONDS')
+    }
+    stage('*** Check out SCM qemu usermode ***') {
+        checkout scm //Getting content of this repo
+    }
     stage('*** PRE-BUILD SETTINGS on qemu usermode ***') { // for display purposes
         //Setting up directory tree using bash commands
         sh '''#!/bin/bash
-			echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
-			PROJECT_DIR=$(pwd)
-			echo -e "[jenkinsfile INFO]: Creating installation directory"
-			mkdir path_to_install
-			cd path_to_install || exit 2 #Python will be installed here
-			echo -e "[jenkinsfile INFO]: Saving installation directory to shell variable $PREFIX"
-			PREFIX=$(pwd)
-			cd "$PROJECT_DIR" || exit 2
-			echo -e "[jenkinsfile VIP INFO]: Jenkinsfile has no way to export variables from one shell instant to another or modifying groovy variables inside bash shell instance."
-			echo -e "[jenkinsfile INFO]: Creating a separate file .vars for saving shell variable for later use."
-			echo "PREFIX=$PREFIX" > .vars
-			echo "PROJECT_DIR=$PROJECT_DIR" >> .vars
+            echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
+            PROJECT_DIR=$(pwd)
+            echo -e "[jenkinsfile INFO]: Creating installation directory"
+            mkdir path_to_install
+            cd path_to_install || exit 2 #Python will be installed here
+            echo -e "[jenkinsfile INFO]: Saving installation directory to shell variable $PREFIX"
+            PREFIX=$(pwd)
+            cd "$PROJECT_DIR" || exit 2
+            echo -e "[jenkinsfile VIP INFO]: Jenkinsfile has no way to export variables from one shell instant to another or modifying groovy variables inside bash shell instance."
+            echo -e "[jenkinsfile INFO]: Creating a separate file .vars for saving shell variable for later use."
+            echo "PREFIX=$PREFIX" > .vars
+            echo "PROJECT_DIR=$PROJECT_DIR" >> .vars
          '''
     }
-    stage (' *** CONFIGURATION PHASE qemu usermode ***'){
+    stage(' *** CONFIGURATION PHASE qemu usermode ***') {
         sh '''#!/bin/bash
-			source .vars
-			echo -e "[jenkinsfile INFO]: Running configure file"
-			./configure --host=riscv64-unknown-linux-gnu --build=x86_64-linux-gnu --prefix="$PREFIX" --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no
+            source .vars
+            echo -e "[jenkinsfile INFO]: Running configure file"
+            ./configure --host=riscv64-unknown-linux-gnu --build=x86_64-linux-gnu --prefix="$PREFIX" --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no
         '''
     }
-	stage (' *** make on qemu usermode ***'){
-		sh'''#!/bin/bash
-			make -j1
-		'''
-	}
-	stage(' *** make install on qemu usermode ***'){
-		sh'''#!/bin/bash
-			make -j1 install
-		'''
-	}
-	stage('*** TEST ON qemu usermode ***'){
-		sh'''#!/bin/bash
-			source .vars
-			cd "$PREFIX"/bin || exit 2
-			echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
-			echo "print('Hello World inside Python !')" > helloworld.py
-			echo -e "\n[jenkinsfile INFO]: Executing on qemu user mode"
-			qemu-riscv64 -L "$RISCV_SYSROOT" ./python3.8 helloworld.py
-			echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
-			rm helloworld.py
-			echo "[jenkinsfile INFO]: END OF JOB !"
-		'''
-	}
-}
-node ('riscv64_runner1'){
-	stage ('*** Checking out SCM on qemu linux ***'){
-    	checkout scm //Getting content of this repo
-	}
-    stage('*** PRE-BUILD SETTINGS on qemu linux ***') { // for display purposes
+    stage(' *** make -j1 qemu usermode ***') {
+        sh'''#!/bin/bash
+            make -j1
+        '''
+    }
+    stage(' *** make -j1 install qemu usermode ***') {
+        sh'''#!/bin/bash
+            make -j1 install
+        '''
+    }
+    stage('*** TEST ON qemu usermode ***') {
+        sh'''#!/bin/bash
+            source .vars
+            cd "$PREFIX"/bin || exit 2
+            echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
+            echo "print('Hello World inside Python !')" > helloworld.py
+            echo -e "\n[jenkinsfile INFO]: Executing on qemu user mode"
+            qemu-riscv64 -L "$RISCV_SYSROOT" ./python3.8 helloworld.py
+            echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
+            rm helloworld.py
+            echo "[jenkinsfile INFO]: END OF JOB !"
+        '''
+    }
+
+//--------------------------------------- qemu usermode two Core ------------------------------------------
+
+    stage('*** 60s Sleep ***') {
+        sleep(time:60, unit:'SECONDS')
+    }
+    stage('*** Check out SCM qemu usermode ***') {
+        checkout scm //Getting content of this repo
+    }
+    stage('*** PRE-BUILD SETTINGS qemu usermode ***') { // for display purposes
         //Setting up directory tree using bash commands
         sh '''#!/bin/bash
-			echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
-			PROJECT_DIR=$(pwd)
-			echo -e "[jenkinsfile INFO]: Creating installation directory"
-			mkdir path_to_install
-			cd path_to_install || exit 2 #Python will be installed here
-			echo -e "[jenkinsfile INFO]: Saving installation directory to shell variable $PREFIX"
-			PREFIX=$(pwd)
-			cd "$PROJECT_DIR" || exit 2
-			echo -e "[jenkinsfile VIP INFO]: Jenkinsfile has no way to export variables from one shell instant to another or modifying groovy variables inside bash shell instance."
-			echo -e "[jenkinsfile INFO]: Creating a separate file .vars for saving shell variable for later use."
-			echo "PREFIX=$PREFIX" > .vars
-			echo "PROJECT_DIR=$PROJECT_DIR" >> .vars
+            echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
+            PROJECT_DIR=$(pwd)
+            echo -e "[jenkinsfile INFO]: Creating installation directory"
+            mkdir path_to_install
+            cd path_to_install || exit 2 #Python will be installed here
+            echo -e "[jenkinsfile INFO]: Saving installation directory to shell variable $PREFIX"
+            PREFIX=$(pwd)
+            cd "$PROJECT_DIR" || exit 2
+            echo -e "[jenkinsfile VIP INFO]: Jenkinsfile has no way to export variables from one shell instant to another or modifying groovy variables inside bash shell instance."
+            echo -e "[jenkinsfile INFO]: Creating a separate file .vars for saving shell variable for later use."
+            echo "PREFIX=$PREFIX" > .vars
+            echo "PROJECT_DIR=$PROJECT_DIR" >> .vars
          '''
     }
-    stage (' *** CONFIGURATION PHASE qemu linux ***'){
+    stage(' *** CONFIGURATION PHASE qemu usermode ***') {
         sh '''#!/bin/bash
-			source .vars
-			echo -e "[jenkinsfile INFO]: Running configure file"
-			./configure --prefix="$PREFIX"
+            source .vars
+            echo -e "[jenkinsfile INFO]: Running configure file"
+            ./configure --host=riscv64-unknown-linux-gnu --build=x86_64-linux-gnu --prefix="$PREFIX" --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no
         '''
     }
-	stage (' *** make on qemu linux ***'){
-		sh'''#!/bin/bash
-			make -j1
-		'''
-	}
-	stage(' *** make install on qemu linux ***'){
-		sh'''#!/bin/bash
-			make -j1 install
-		'''
-	}
-	stage('*** TEST ON qemu linux ***'){
-		sh'''#!/bin/bash
-			source .vars
-			cd "$PREFIX"/bin || exit 2
-			echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
-			echo "print('Hello World inside Python !')" > helloworld.py
-			echo -e "\n[jenkinsfile INFO]: Executing on qemu linux (ubuntu 22.04)"
-			./python3.8 helloworld.py
-			echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
-			rm helloworld.py
-			echo "[jenkinsfile INFO]: END OF JOB !"
-		'''
-	}
+    stage(' *** make -j2 qemu usermode ***') {
+        sh'''#!/bin/bash
+            make -j2
+        '''
+    }
+    stage(' *** make -j2 install qemu usermode ***') {
+        sh'''#!/bin/bash
+            make -j2 install
+        '''
+    }
+    stage('*** TEST qemu usermode ***') {
+        sh'''#!/bin/bash
+            source .vars
+            cd "$PREFIX"/bin || exit 2
+            echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
+            echo "print('Hello World inside Python !')" > helloworld.py
+            echo -e "\n[jenkinsfile INFO]: Executing on qemu user mode"
+            qemu-riscv64 -L "$RISCV_SYSROOT" ./python3.8 helloworld.py
+            echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
+            rm helloworld.py
+            echo "[jenkinsfile INFO]: END OF JOB !"
+        '''
+    }
+}
+
+//--------------------------------------- qemu linux Single Core ------------------------------------------
+
+node('riscv64_runner1') {
+    stage('*** 60s Sleep ***') {
+        sleep(time:60, unit:'SECONDS')
+    }
+    stage('*** Checking out SCM qemu linux ***') {
+        checkout scm //Getting content of this repo
+    }
+    stage('*** PRE-BUILD SETTINGS qemu linux ***') { // for display purposes
+        //Setting up directory tree using bash commands
+        sh '''#!/bin/bash
+            echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
+            PROJECT_DIR=$(pwd)
+            echo -e "[jenkinsfile INFO]: Creating installation directory"
+            mkdir path_to_install
+            cd path_to_install || exit 2 #Python will be installed here
+            echo -e "[jenkinsfile INFO]: Saving installation directory to shell variable $PREFIX"
+            PREFIX=$(pwd)
+            cd "$PROJECT_DIR" || exit 2
+            echo -e "[jenkinsfile VIP INFO]: Jenkinsfile has no way to export variables from one shell instant to another or modifying groovy variables inside bash shell instance."
+            echo -e "[jenkinsfile INFO]: Creating a separate file .vars for saving shell variable for later use."
+            echo "PREFIX=$PREFIX" > .vars
+            echo "PROJECT_DIR=$PROJECT_DIR" >> .vars
+         '''
+    }
+    stage(' *** CONFIGURATION PHASE qemu linux ***') {
+        sh '''#!/bin/bash
+            source .vars
+            echo -e "[jenkinsfile INFO]: Running configure file"
+            ./configure --prefix="$PREFIX"
+        '''
+    }
+    stage(' *** make qemu linux single core ***') {
+        sh'''#!/bin/bash
+            make -j1
+        '''
+    }
+    stage(' *** make install qemu linux single core ***') {
+        sh'''#!/bin/bash
+            make -j1 install
+        '''
+    }
+    stage('*** TEST qemu linux ***') {
+        sh'''#!/bin/bash
+            source .vars
+            cd "$PREFIX"/bin || exit 2
+            echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
+            echo "print('Hello World inside Python !')" > helloworld.py
+            echo -e "\n[jenkinsfile INFO]: Executing on qemu linux (ubuntu 22.04)"
+            ./python3.8 helloworld.py
+            echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
+            rm helloworld.py
+            echo "[jenkinsfile INFO]: END OF JOB !"
+        '''
+    }
+    //--------------------------------------- qemu linux Two Cores ------------------------------------------
+    stage('*** 60s Sleep ***') {
+        sleep(time:60, unit:'SECONDS')
+    }
+    stage('*** Checking out SCM qemu linux ***') {
+        checkout scm //Getting content of this repo
+    }
+    stage('*** PRE-BUILD SETTINGS qemu linux ***') { // for display purposes
+        //Setting up directory tree using bash commands
+        sh '''#!/bin/bash
+            echo -e "[jenkinsfile INFO]: Saving current directory to shell variable $PROJECT_DIR."
+            PROJECT_DIR=$(pwd)
+            echo -e "[jenkinsfile INFO]: Creating installation directory"
+            mkdir path_to_install
+            cd path_to_install || exit 2 #Python will be installed here
+            echo -e "[jenkinsfile INFO]: Saving installation directory to shell variable $PREFIX"
+            PREFIX=$(pwd)
+            cd "$PROJECT_DIR" || exit 2
+            echo -e "[jenkinsfile VIP INFO]: Jenkinsfile has no way to export variables from one shell instant to another or modifying groovy variables inside bash shell instance."
+            echo -e "[jenkinsfile INFO]: Creating a separate file .vars for saving shell variable for later use."
+            echo "PREFIX=$PREFIX" > .vars
+            echo "PROJECT_DIR=$PROJECT_DIR" >> .vars
+         '''
+    }
+    stage(' *** CONFIGURATION PHASE qemu linux ***') {
+        sh '''#!/bin/bash
+            source .vars
+            echo -e "[jenkinsfile INFO]: Running configure file"
+            ./configure --prefix="$PREFIX"
+        '''
+    }
+    stage(' *** make -j2 qemu linux ***') {
+        sh'''#!/bin/bash
+            make -j2
+        '''
+    }
+    stage(' *** make -j2 install qemu linux ***') {
+        sh'''#!/bin/bash
+            make -j2 install
+        '''
+    }
+    stage('*** TEST ON qemu linux ***') {
+        sh'''#!/bin/bash
+            source .vars
+            cd "$PREFIX"/bin || exit 2
+            echo -e "\n[jenkinsfile INFO]: Creating helloworld.py to run test on"
+            echo "print('Hello World inside Python !')" > helloworld.py
+            echo -e "\n[jenkinsfile INFO]: Executing on qemu linux (ubuntu 22.04)"
+            ./python3.8 helloworld.py
+            echo -e "\n[jenkinsfile INFO]: Deleting helloworld.py..."
+            rm helloworld.py
+            echo "[jenkinsfile INFO]: END OF JOB !"
+        '''
+    }
 }

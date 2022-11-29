@@ -56,12 +56,13 @@ node('x86_runner2') {
             echo "[jenkinsfile INFO]: END OF JOB !"
         '''
     }
+    stage('*** Cleanup***') {
+        cleanWs()
+    }
+
 
     //--------------------------------------- x86_64 Two Cores ------------------------------------------
 
-    stage('*** Cleanup ***') {
-        cleanWs()
-    }
     stage('*** 60s Sleep ***') {
         sleep(time:60, unit:'SECONDS')
     }
@@ -115,9 +116,15 @@ node('x86_runner2') {
             echo "[jenkinsfile INFO]: END OF JOB !"
         '''
     }
+    stage('*** Cleanup***') {
+        cleanWs()
+    }
 }
 //--------------------------------------- qemu usermode Single Core ------------------------------------------
 node('qemuusermode_runner2') {
+    stage('*** Cleanup***') {
+        cleanWs()
+    }
     stage('*** 60s Sleep ***') {
         sleep(time:60, unit:'SECONDS')
     }
@@ -170,6 +177,9 @@ node('qemuusermode_runner2') {
             rm helloworld.py
             echo "[jenkinsfile INFO]: END OF JOB !"
         '''
+    }
+    stage('*** Cleanup***') {
+        cleanWs()
     }
 
 //--------------------------------------- qemu usermode two Core ------------------------------------------
@@ -227,11 +237,17 @@ node('qemuusermode_runner2') {
             echo "[jenkinsfile INFO]: END OF JOB !"
         '''
     }
+    stage('*** Cleanup***') {
+        cleanWs()
+    }
 }
 
 //--------------------------------------- qemu linux Single Core ------------------------------------------
 
 node('riscv64_runner1') {
+    stage('*** Cleanup***') {
+        cleanWs()
+    }
     stage('*** 60s Sleep ***') {
         sleep(time:60, unit:'SECONDS')
     }
@@ -284,6 +300,9 @@ node('riscv64_runner1') {
             rm helloworld.py
             echo "[jenkinsfile INFO]: END OF JOB !"
         '''
+    }
+    stage('*** Cleanup***') {
+        cleanWs()
     }
     //--------------------------------------- qemu linux Two Cores ------------------------------------------
     stage('*** 60s Sleep ***') {
@@ -338,5 +357,8 @@ node('riscv64_runner1') {
             rm helloworld.py
             echo "[jenkinsfile INFO]: END OF JOB !"
         '''
+    }
+    stage('*** Cleanup***') {
+        cleanWs()
     }
 }
